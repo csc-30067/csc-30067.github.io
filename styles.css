@@ -1,0 +1,225 @@
+:root {
+  --bg: #f6f7fb;
+  --surface: #ffffff;
+  --surface-alt: #eef2ff;
+  --text: #1f2937;
+  --muted: #5b6474;
+  --border: #d7dce5;
+  --primary: #1d4ed8;
+  --primary-hover: #1e40af;
+  --success-bg: #eefbf3;
+  --success-border: #b7e4c7;
+  --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --radius: 16px;
+  --container: 960px;
+  --container-narrow: 720px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: var(--primary);
+}
+
+a:hover,
+a:focus-visible {
+  color: var(--primary-hover);
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+}
+
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+  background: #fff;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--primary);
+  border-radius: 0.5rem;
+  z-index: 1000;
+}
+
+.container {
+  width: min(var(--container), calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.container.narrow,
+.narrow {
+  width: min(var(--container-narrow), calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.site-header {
+  padding: 4rem 0 3rem;
+  background: linear-gradient(180deg, #eef4ff 0%, #f6f7fb 100%);
+  border-bottom: 1px solid var(--border);
+}
+
+.site-header-compact {
+  padding-top: 3rem;
+  padding-bottom: 2rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+h1,
+h2 {
+  line-height: 1.2;
+  margin-top: 0;
+}
+
+h1 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.lead {
+  max-width: 60ch;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.section {
+  padding: 2rem 0 4rem;
+}
+
+.grid-two {
+  display: grid;
+  gap: 1.25rem;
+}
+
+@media (min-width: 760px) {
+  .grid-two {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+}
+
+.form-card {
+  margin-top: 1.25rem;
+}
+
+.hero-actions {
+  margin-top: 1.5rem;
+}
+
+.button {
+  display: inline-block;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.85rem 1.2rem;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.button-primary:hover,
+.button-primary:focus-visible {
+  background: var(--primary-hover);
+  color: #fff;
+}
+
+.text-link {
+  font-weight: 600;
+}
+
+.breadcrumbs {
+  margin-top: 1rem;
+  color: var(--muted);
+}
+
+.breadcrumbs a {
+  text-decoration: none;
+}
+
+.checklist {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.45rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  font: inherit;
+  color: var(--text);
+  background: #fff;
+}
+
+input:focus-visible {
+  outline: 3px solid rgba(29, 78, 216, 0.18);
+  border-color: var(--primary);
+}
+
+.field-help {
+  margin: 0.45rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.status-box {
+  margin-top: 1.25rem;
+  padding: 1rem 1.1rem;
+  background: var(--success-bg);
+  border: 1px solid var(--success-border);
+  border-radius: 0.9rem;
+}
+
+.site-footer {
+  padding: 1.5rem 0 3rem;
+  color: var(--muted);
+}
+
