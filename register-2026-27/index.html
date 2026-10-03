@@ -151,7 +151,7 @@
         result = null;
       }
 
-      if (!response.ok) {
+      if (!response.ok || result?.ok === false) {
 	const message =
 	  result?.error === "forbidden-origin"
 	    ? "This page is not allowed to submit to the registration service."
