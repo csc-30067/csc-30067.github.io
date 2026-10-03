@@ -92,29 +92,99 @@
     </div>
   </footer>
 
-  <script>
-    const form = document.getElementById('registration-form');
-    const statusBox = document.getElementById('form-status');
+<script>
+  const WORKER_URL = "https://module-registration-relay.marco-ortolani.workers.dev";
 
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
+  const form = document.getElementById("registration-form");
+  const statusBox = document.getElementById("form-status");
+  const submitButton = form.querySelector('button[type="submit"]');
 
-      const userid = document.getElementById('userid').value.trim();
-      const githubid = document.getElementById('githubid').value.trim();
+  function setStatus(message, type = "info") {
+    statusBox.textContent = message;
+    statusBox.className = "status-box";
 
-      if (!/^[0-9]{8}$/.test(userid)) {
-        statusBox.textContent = 'Please enter a valid 8-digit student ID.';
+    if (type === "success") {
+      statusBox.classList.add("status-success");
+    } else if (type === "error") {
+      statusBox.classList.add("status-error");
+    } else {
+      statusBox.classList.add("status-info");
+    }
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const userid = document.getElementById("userid").value.trim();
+    const githubid = document.getElementById("githubid").value.trim();
+
+    if (!/^[0-9]{8}$/.test(userid)) {
+      setStatus("Please enter a valid 8-digit student ID.", "error");
+      return;
+    }
+
+    if (!githubid) {
+      setStatus("Please enter your GitHub username.", "error");
+      return;
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = "Submitting...";
+    setStatus("Submitting your registration...", "info");
+
+    try {
+      const response = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          userid,
+          githubid
+        })
+      });
+
+      let result = null;
+      try {
+        result = await response.json();
+      } catch {
+        result = null;
+      }
+
+      if (!response.ok) {
+        const message =
+          result?.error === "forbidden-origin"
+            ? "This page is not allowed to submit to the registration service."
+            : result?.error === "missing-fields"
+            ? "Please complete both fields before submitting."
+            : result?.error === "invalid-json"
+            ? "The request could not be processed."
+            : result?.error === "github-dispatch-failed"
+            ? "The registration service could not contact GitHub."
+            : "The registration request could not be submitted.";
+
+        setStatus(message, "error");
         return;
       }
 
-      if (!githubid) {
-        statusBox.textContent = 'Please enter your GitHub username.';
-        return;
-      }
+      setStatus(
+        "Your registration request has been submitted. Final validation happens shortly afterwards.",
+        "success"
+      );
 
-      statusBox.textContent = 'Form validation passed. Worker connection not added yet.';
-    });
-  </script>
+      form.reset();
+    } catch (error) {
+      setStatus(
+        "A network error prevented submission. Please try again.",
+        "error"
+      );
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit registration";
+    }
+  });
+</script>
+
 </body>
 </html>
 
