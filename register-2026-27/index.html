@@ -152,16 +152,22 @@
       }
 
       if (!response.ok) {
-        const message =
-          result?.error === "forbidden-origin"
-            ? "This page is not allowed to submit to the registration service."
-            : result?.error === "missing-fields"
-            ? "Please complete both fields before submitting."
-            : result?.error === "invalid-json"
-            ? "The request could not be processed."
-            : result?.error === "github-dispatch-failed"
-            ? "The registration service could not contact GitHub."
-            : "The registration request could not be submitted.";
+	const message =
+	  result?.error === "forbidden-origin"
+	    ? "This page is not allowed to submit to the registration service."
+		: result?.error === "invalid-studentid"
+	    ? "Please enter a valid 8-digit student ID."
+    		: result?.error === "missing-githubid"
+	    ? "Please enter your GitHub username."
+		: result?.error === "not-allowed"
+	    ? "This student ID is not allowed to register."
+		: result?.error === "already-registered"
+	    ? "This student ID has already been registered."
+    		: result?.error === "backend-validation-unavailable"
+	    ? "The validation service is temporarily unavailable."
+    		: result?.error === "github-dispatch-failed"
+	    ? "The registration service could not complete your submission."
+		: "The registration request could not be submitted.";
 
         setStatus(message, "error");
         return;
