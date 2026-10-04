@@ -1,1 +1,267 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CSC-30067 Teaching Administration</title><style>:root{--navy:#14213d;--blue:#2563eb;--bg:#f4f7fb;--ink:#182230;--muted:#667085;--border:#d9e0ea;--red:#b42318;--green:#067647}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}.top{background:var(--navy);color:#fff;padding:28px max(22px,calc((100% - 760px)/2))}.top small{opacity:.75}.top h1{margin:5px 0 0;font-size:27px}.wrap{max-width:760px;margin:28px auto;padding:0 22px}.panel{background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px;box-shadow:0 2px 8px #14213d0a}.panel h2{margin:0 0 5px;font-size:20px}.panel p{margin:0 0 18px;color:var(--muted)}label{display:block;font-weight:650;margin:14px 0 6px}input{width:100%;padding:11px 12px;border:1px solid #bfc9d8;border-radius:7px;font:inherit}.btn{margin-top:14px;border:0;border-radius:7px;padding:11px 16px;background:var(--blue);color:white;font:inherit;font-weight:650;cursor:pointer}.btn:disabled{opacity:.55;cursor:not-allowed}.result{display:none;margin-top:18px;padding:15px;border-radius:8px;background:#eff6ff;border:1px solid #bfdbfe}.result.error{background:#fee4e2;border-color:#fecaca;color:var(--red)}.result.success{background:#ecfdf3;border-color:#abefc6;color:var(--green)}.result dl{display:grid;grid-template-columns:150px 1fr;gap:7px;margin:0}.result dt{font-weight:650}.result dd{margin:0;word-break:break-word}.hint{font-size:13px;color:var(--muted);margin-top:14px}</style></head><body><header class="top"><small>CSC-30067 · 2026/27</small><h1>Teaching Administration</h1></header><main class="wrap"><section class="panel"><h2>Find GitHub user</h2><p>Sign in, then enter a GitHub username to retrieve the corresponding GitHub account ID.</p><form id="loginForm"><label for="adminPassword">Admin password</label><input id="adminPassword" type="password" autocomplete="current-password" required><button class="btn" id="loginButton" type="submit">Sign in</button></form><form id="lookupForm"><label for="githubUsername">GitHub username</label><input id="githubUsername" autocomplete="off" placeholder="e.g. octocat" required disabled><button class="btn" id="lookupButton" type="submit" disabled>Find GitHub ID</button></form><div id="result" class="result" role="status" aria-live="polite"></div><div class="hint">The session is held in a secure, short-lived cookie by the Worker.</div></section></main><script>const WORKER_URL="https://module-registration-relay.marco-ortolani.workers.dev";const loginForm=document.getElementById("loginForm"),lookupForm=document.getElementById("lookupForm"),password=document.getElementById("adminPassword"),username=document.getElementById("githubUsername"),lookupButton=document.getElementById("lookupButton"),result=document.getElementById("result");function show(message,kind=""){result.className="result "+kind;result.style.display="block";result.textContent=message}function escapeHtml(value){const entities={"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"};return value.replace(/[&<>"']/g,character=>entities[character])}loginForm.addEventListener("submit",async event=>{event.preventDefault();const button=document.getElementById("loginButton");button.disabled=true;show("Signing in…");try{const response=await fetch(WORKER_URL+"/admin/login",{method:"POST",headers:{"Content-Type":"application/json"},credentials:"include",body:JSON.stringify({password:password.value})}),data=await response.json();if(!response.ok){show("Sign-in failed. Check the password.","error");return}username.disabled=false;lookupButton.disabled=false;show("Signed in. You can now look up a GitHub user.","success")}catch{show("Could not contact the Worker.","error")}finally{button.disabled=false}});lookupForm.addEventListener("submit",async event=>{event.preventDefault();show("Looking up GitHub user…");try{const response=await fetch(WORKER_URL+"/admin/github-user?username="+encodeURIComponent(username.value.trim()),{credentials:"include"}),data=await response.json();if(!response.ok){show(data.error||"Lookup failed.","error");return}result.className="result success";result.style.display="block";result.innerHTML="<dl><dt>GitHub username</dt><dd>"+escapeHtml(String(data.login))+"</dd><dt>GitHub ID</dt><dd>"+escapeHtml(String(data.id))+"</dd></dl>"}catch{show("Could not contact the Worker.","error")}});</script></body></html>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>CSC-30067 Teaching Administration</title>
+    <style>
+        :root {
+            --navy: #14213d;
+            --blue: #2563eb;
+            --bg: #f4f7fb;
+            --ink: #182230;
+            --muted: #667085;
+            --border: #d9e0ea;
+            --red: #b42318;
+            --green: #067647
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif
+        }
+
+        .top {
+            background: var(--navy);
+            color: #fff;
+            padding: 28px max(22px, calc((100% - 760px)/2))
+        }
+
+        .top small {
+            opacity: .75
+        }
+
+        .top h1 {
+            margin: 5px 0 0;
+            font-size: 27px
+        }
+
+        .wrap {
+            max-width: 760px;
+            margin: 28px auto;
+            padding: 0 22px
+        }
+
+        .panel {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 22px;
+            box-shadow: 0 2px 8px #14213d0a
+        }
+
+        .panel h2 {
+            margin: 0 0 5px;
+            font-size: 20px
+        }
+
+        .panel p {
+            margin: 0 0 18px;
+            color: var(--muted)
+        }
+
+        label {
+            display: block;
+            font-weight: 650;
+            margin: 14px 0 6px
+        }
+
+        input {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #bfc9d8;
+            border-radius: 7px;
+            font: inherit
+        }
+
+        .btn {
+            margin-top: 14px;
+            border: 0;
+            border-radius: 7px;
+            padding: 11px 16px;
+            background: var(--blue);
+            color: white;
+            font: inherit;
+            font-weight: 650;
+            cursor: pointer
+        }
+
+        .btn:disabled {
+            opacity: .55;
+            cursor: not-allowed
+        }
+
+        .result {
+            display: none;
+            margin-top: 18px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe
+        }
+
+        .result.error {
+            background: #fee4e2;
+            border-color: #fecaca;
+            color: var(--red)
+        }
+
+        .result.success {
+            background: #ecfdf3;
+            border-color: #abefc6;
+            color: var(--green)
+        }
+
+        .result dl {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 7px;
+            margin: 0
+        }
+
+        .result dt {
+            font-weight: 650
+        }
+
+        .result dd {
+            margin: 0;
+            word-break: break-word
+        }
+
+        .hint {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 14px
+        }
+    </style>
+</head>
+
+<body>
+    <header class="top"><small>CSC-30067 · 2026/27</small>
+        <h1>Teaching Administration</h1>
+    </header>
+    <main class="wrap">
+        <section class="panel">
+            <h2>Find GitHub user</h2>
+            <p>Sign in, then enter a GitHub username to retrieve the corresponding GitHub account ID.</p>
+            <form id="loginForm"><label for="adminPassword">Admin password</label><input id="adminPassword"
+                    type="password" autocomplete="current-password" required><button class="btn" id="loginButton"
+                    type="submit">Sign in</button></form>
+            <form id="lookupForm"><label for="githubUsername">GitHub username</label><input id="githubUsername"
+                    autocomplete="off" placeholder="e.g. octocat" required disabled><button class="btn"
+                    id="lookupButton" type="submit" disabled>Find GitHub ID</button></form>
+            <div id="result" class="result" role="status" aria-live="polite"></div>
+            <div class="hint">The session is held in a secure, short-lived cookie by the Worker.</div>
+        </section>
+    </main>
+<script>
+const WORKER_URL = "https://module-registration-relay.marco-ortolani.workers.dev";
+let sessionToken = null;
+
+const loginForm = document.getElementById("loginForm");
+const lookupForm = document.getElementById("lookupForm");
+const password = document.getElementById("adminPassword");
+const username = document.getElementById("githubUsername");
+const lookupButton = document.getElementById("lookupButton");
+const result = document.getElementById("result");
+
+function show(message, kind = "") {
+  result.className = "result " + kind;
+  result.style.display = "block";
+  result.textContent = message;
+}
+
+function escapeHtml(value) {
+  const entities = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#39;"
+  };
+
+  return value.replace(/[&<>\"']/g, character => entities[character]);
+}
+
+loginForm.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const button = document.getElementById("loginButton");
+  button.disabled = true;
+  show("Signing in…");
+
+  try {
+    const response = await fetch(WORKER_URL + "/admin/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        password: password.value
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.token) {
+      show("Sign-in failed. Check the password.", "error");
+      return;
+    }
+
+    sessionToken = data.token;
+    username.disabled = false;
+    lookupButton.disabled = false;
+    show("Signed in. You can now look up a GitHub user.", "success");
+  } catch {
+    show("Could not contact the Worker.", "error");
+  } finally {
+    button.disabled = false;
+  }
+});
+
+lookupForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  show("Looking up GitHub user…");
+
+  try {
+    const response = await fetch(
+      WORKER_URL +
+        "/admin/github-user?username=" +
+        encodeURIComponent(username.value.trim()),
+      {
+        headers: {
+          Authorization: "Bearer " + sessionToken
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      show(data.error || "Lookup failed.", "error");
+      return;
+    }
+
+    result.className = "result success";
+    result.style.display = "block";
+    result.innerHTML =
+      "<dl><dt>GitHub username</dt><dd>" +
+      escapeHtml(String(data.login)) +
+      "</dd><dt>GitHub ID</dt><dd>" +
+      escapeHtml(String(data.id)) +
+      "</dd></dl>";
+  } catch {
+    show("Could not contact the Worker.", "error");
+  }
+});
+</script>
+</body>
+
+</html>
