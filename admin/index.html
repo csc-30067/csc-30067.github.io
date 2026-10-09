@@ -1,265 +1,409 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>CSC-30067 Teaching Administration</title>
-    <style>
-        :root {
-            --navy: #14213d;
-            --blue: #2563eb;
-            --bg: #f4f7fb;
-            --ink: #182230;
-            --muted: #667085;
-            --border: #d9e0ea;
-            --red: #b42318;
-            --green: #067647;
-            --amber: #b54708
-        }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CSC-30067 Teaching Administration</title>
+  <style>
+    :root {
+      --navy: #14213d;
+      --blue: #2563eb;
+      --background: #f4f7fb;
+      --ink: #182230;
+      --muted: #667085;
+      --border: #d9e0ea;
+      --red: #b42318;
+      --green: #067647;
+      --amber: #b54708;
+    }
 
-        * {
-            box-sizing: border-box
-        }
+    * { box-sizing: border-box; }
 
-        body {
-            margin: 0;
-            background: var(--bg);
-            color: var(--ink);
-            font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif
-        }
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--ink);
+      font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
 
-        .top {
-            background: var(--navy);
-            color: #fff;
-            padding: 28px max(22px, calc((100% - 1000px)/2))
-        }
+    .top {
+      padding: 28px max(22px, calc((100% - 1000px) / 2));
+      background: var(--navy);
+      color: white;
+    }
 
-        .top small {
-            opacity: .75
-        }
+    .top small { opacity: .75; }
+    .top h1 { margin: 5px 0 0; font-size: 27px; }
 
-        .top h1 {
-            margin: 5px 0 0;
-            font-size: 27px
-        }
+    .wrap {
+      max-width: 1000px;
+      margin: 28px auto;
+      padding: 0 22px;
+    }
 
-        .wrap {
-            max-width: 1000px;
-            margin: 28px auto;
-            padding: 0 22px
-        }
+    .panel {
+      margin-bottom: 18px;
+      padding: 22px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #14213d0a;
+    }
 
-        .panel {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 22px;
-            margin-bottom: 18px;
-            box-shadow: 0 2px 8px #14213d0a
-        }
+    .panel h2 { margin: 0 0 5px; font-size: 20px; }
+    .panel p { margin: 0 0 18px; color: var(--muted); }
 
-        .panel h2 {
-            margin: 0 0 5px;
-            font-size: 20px
-        }
+    label { display: block; margin: 14px 0 6px; font-weight: 650; }
 
-        .panel p {
-            margin: 0 0 18px;
-            color: var(--muted)
-        }
+    input[type="password"] {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #bfc9d8;
+      border-radius: 7px;
+      font: inherit;
+    }
 
-        label {
-            display: block;
-            font-weight: 650;
-            margin: 14px 0 6px
-        }
+    .btn {
+      margin-top: 14px;
+      padding: 11px 16px;
+      border: 0;
+      border-radius: 7px;
+      background: var(--blue);
+      color: white;
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
 
-        input[type=password] {
-            width: 100%;
-            padding: 11px 12px;
-            border: 1px solid #bfc9d8;
-            border-radius: 7px;
-            font: inherit
-        }
+    .btn.secondary { background: #475467; }
+    .btn:disabled { opacity: .55; cursor: not-allowed; }
 
-        .btn {
-            margin-top: 14px;
-            border: 0;
-            border-radius: 7px;
-            padding: 11px 16px;
-            background: var(--blue);
-            color: #fff;
-            font: inherit;
-            font-weight: 650;
-            cursor: pointer
-        }
+    .result {
+      display: none;
+      margin-top: 18px;
+      padding: 15px;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      background: #eff6ff;
+    }
 
-        .btn.secondary {
-            background: #475467
-        }
+    .result.error { border-color: #fecaca; background: #fee4e2; color: var(--red); }
+    .result.success { border-color: #abefc6; background: #ecfdf3; color: var(--green); }
 
-        .btn:disabled {
-            opacity: .55;
-            cursor: not-allowed
-        }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      margin: 16px 0;
+    }
 
-        .result {
-            display: none;
-            margin-top: 18px;
-            padding: 15px;
-            border-radius: 8px;
-            background: #eff6ff;
-            border: 1px solid #bfdbfe
-        }
+    .toolbar label { margin: 0; font-weight: 500; }
 
-        .result.error {
-            background: #fee4e2;
-            border-color: #fecaca;
-            color: var(--red)
-        }
+    .pending-list {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
 
-        .result.success {
-            background: #ecfdf3;
-            border-color: #abefc6;
-            color: var(--green)
-        }
+    .pending-row {
+      display: grid;
+      grid-template-columns: 34px 1fr 150px;
+      gap: 12px;
+      align-items: center;
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--border);
+    }
 
-        .toolbar {
-            display: flex;
-            gap: 14px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin: 16px 0
-        }
+    .pending-row:last-child { border-bottom: 0; }
+    .pending-row input { width: 18px; height: 18px; }
+    .meta { color: var(--muted); font-size: 13px; }
+    .status { font-size: 13px; font-weight: 650; text-align: right; }
+    .status.pending { color: var(--muted); }
+    .status.submitted { color: var(--amber); }
+    .status.error { color: var(--red); }
+    .empty { padding: 20px; color: var(--muted); }
+    .hint { margin-top: 14px; color: var(--muted); font-size: 13px; }
 
-        .toolbar label {
-            margin: 0;
-            font-weight: 500
-        }
-
-        .pending-list {
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            overflow: hidden
-        }
-
-        .pending-row {
-            display: grid;
-            grid-template-columns: 34px 1fr 150px;
-            gap: 12px;
-            align-items: center;
-            padding: 13px 14px;
-            border-bottom: 1px solid var(--border)
-        }
-
-        .pending-row:last-child {
-            border-bottom: 0
-        }
-
-        .pending-row input {
-            width: 18px;
-            height: 18px
-        }
-
-        .meta {
-            color: var(--muted);
-            font-size: 13px
-        }
-
-        .status {
-            font-size: 13px;
-            font-weight: 650;
-            text-align: right
-        }
-
-        .status.pending {
-            color: var(--muted)
-        }
-
-        .status.submitted {
-            color: var(--amber)
-        }
-
-        .status.error {
-            color: var(--red)
-        }
-
-        .empty {
-            padding: 20px;
-            color: var(--muted)
-        }
-
-        .hint {
-            font-size: 13px;
-            color: var(--muted);
-            margin-top: 14px
-        }
-
-        @media(max-width:650px) {
-            .pending-row {
-                grid-template-columns: 34px 1fr
-            }
-
-            .status {
-                text-align: left;
-                grid-column: 2
-            }
-        }
-    </style>
+    @media (max-width: 650px) {
+      .pending-row { grid-template-columns: 34px 1fr; }
+      .status { grid-column: 2; text-align: left; }
+    }
+  </style>
 </head>
-
 <body>
-    <header class="top"><small>CSC-30067 · 2026/27</small>
-        <h1>Teaching Administration</h1>
-    </header>
-    <main class="wrap">
-        <section class="panel">
-            <h2>Administrator sign in</h2>
-            <p>Sign in to manage pending module registrations.</p>
-            <form id="loginForm"><label for="adminPassword">Admin password</label><input id="adminPassword"
-                    type="password" autocomplete="current-password" required><button class="btn" id="loginButton">Sign
-                    in</button></form>
-            <div id="loginResult" class="result" role="status" aria-live="polite"></div>
-        </section>
-        <section class="panel" id="pendingPanel" hidden>
-            <h2>Pending registrations</h2>
-            <p>Select individual registrations to process. Multiple selections are processed one at a time.</p>
-            <div class="toolbar"><label><input type="checkbox" id="selectAllPending"> Select all</label><button
-                    class="btn secondary" id="refreshButton" type="button">Refresh</button><button class="btn"
-                    id="processButton" type="button" disabled>Process selected</button></div>
-            <div id="pendingList" class="pending-list">
-                <div class="empty">Loading pending registrations…</div>
-            </div>
-            <div id="pendingResult" class="result" role="status" aria-live="polite"></div>
-        </section>
-    </main>
-    <script>
-        const WORKER_URL = "https://module-registration-relay.marco-ortolani.workers.dev";
-        let sessionToken = null;
-        const loginForm = document.getElementById("loginForm"), loginButton = document.getElementById("loginButton"), loginResult = document.getElementById("loginResult"), pendingPanel = document.getElementById("pendingPanel"), pendingList = document.getElementById("pendingList"), pendingResult = document.getElementById("pendingResult"), selectAll = document.getElementById("selectAllPending"), processButton = document.getElementById("processButton"), refreshButton = document.getElementById("refreshButton");
-        function show(element, message, kind = "") { element.className = "result " + kind; element.style.display = "block"; element.textContent = message }
-        function escapeHtml(value) {
-            const entities = {
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                "\"": "&quot;",
-                "'": "&#39;"
-            };
+  <header class="top">
+    <small>CSC-30067 · 2026/27</small>
+    <h1>Teaching Administration</h1>
+  </header>
 
-            return String(value).replace(
-                /[&<>"']/g,
-                character => entities[character]
-            );
+  <main class="wrap">
+    <section class="panel">
+      <h2>Administrator sign in</h2>
+      <p>Sign in to manage pending module registrations.</p>
+
+      <form id="loginForm">
+        <label for="adminPassword">Admin password</label>
+        <input
+          id="adminPassword"
+          type="password"
+          autocomplete="current-password"
+          required
+        >
+        <button class="btn" id="loginButton">Sign in</button>
+      </form>
+
+      <div id="loginResult" class="result" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="panel" id="pendingPanel" hidden>
+      <h2>Pending registrations</h2>
+      <p>
+        Select individual registrations to process. Multiple selections are
+        processed one at a time.
+      </p>
+
+      <div class="toolbar">
+        <label>
+          <input type="checkbox" id="selectAllPending">
+          Select all
+        </label>
+        <button class="btn secondary" id="refreshButton" type="button">
+          Refresh
+        </button>
+        <button class="btn" id="processButton" type="button" disabled>
+          Process selected
+        </button>
+      </div>
+
+      <div id="pendingList" class="pending-list">
+        <div class="empty">Loading pending registrations…</div>
+      </div>
+
+      <div id="pendingResult" class="result" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script>
+    const WORKER_URL =
+      "https://module-registration-relay.marco-ortolani.workers.dev";
+
+    let sessionToken = null;
+
+    const loginForm = document.getElementById("loginForm");
+    const loginButton = document.getElementById("loginButton");
+    const loginResult = document.getElementById("loginResult");
+    const pendingPanel = document.getElementById("pendingPanel");
+    const pendingList = document.getElementById("pendingList");
+    const pendingResult = document.getElementById("pendingResult");
+    const selectAll = document.getElementById("selectAllPending");
+    const processButton = document.getElementById("processButton");
+    const refreshButton = document.getElementById("refreshButton");
+
+    function showResult(element, message, kind = "") {
+      element.className = `result ${kind}`;
+      element.style.display = "block";
+      element.textContent = message;
+    }
+
+    function escapeHtml(value) {
+      const entities = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#39;"
+      };
+
+      return String(value).replace(
+        /[&<>\"']/g,
+        (character) => entities[character]
+      );
+    }
+
+    function checkboxes() {
+      return [...document.querySelectorAll(".pending-checkbox")];
+    }
+
+    function updateSelection() {
+      const all = checkboxes();
+      const selected = all.filter((box) => box.checked).length;
+
+      selectAll.checked = all.length > 0 && selected === all.length;
+      selectAll.indeterminate = selected > 0 && selected < all.length;
+      processButton.disabled = selected === 0;
+    }
+
+    function renderPending(rows) {
+      if (!rows.length) {
+        pendingList.innerHTML =
+          '<div class="empty">No pending registrations.</div>';
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+        processButton.disabled = true;
+        return;
+      }
+
+      pendingList.innerHTML = rows
+        .map((row, index) => `
+          <label class="pending-row">
+            <input
+              type="checkbox"
+              class="pending-checkbox"
+              data-index="${index}"
+            >
+            <span>
+              <strong>${escapeHtml(row.student_id)}</strong>
+              · ${escapeHtml(row.github_username)}
+              · GitHub ID ${escapeHtml(row.github_id)}<br>
+              <span class="meta">
+                ${escapeHtml(row.timestamp_utc)}
+              </span>
+            </span>
+            <span class="status pending" data-status="${index}">
+              Pending
+            </span>
+          </label>
+        `)
+        .join("");
+
+      pendingList._rows = rows;
+
+      checkboxes().forEach((box) => {
+        box.addEventListener("change", updateSelection);
+      });
+
+      updateSelection();
+    }
+
+    async function loadPending() {
+      pendingList.innerHTML =
+        '<div class="empty">Loading pending registrations…</div>';
+
+      try {
+        const response = await fetch(`${WORKER_URL}/admin/pending`, {
+          headers: {
+            Authorization: `Bearer ${sessionToken}`
+          }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          showResult(
+            pendingResult,
+            data.error || "Could not load pending registrations.",
+            "error"
+          );
+          return;
         }
-        function boxes() { return [...document.querySelectorAll(".pending-checkbox")] } function updateSelection() { const all = boxes(), selected = all.filter(b => b.checked).length; selectAll.checked = all.length > 0 && selected === all.length; selectAll.indeterminate = selected > 0 && selected < all.length; processButton.disabled = selected === 0 }
-        function renderPending(rows) { if (!rows.length) { pendingList.innerHTML = '<div class="empty">No pending registrations.</div>'; selectAll.checked = false; selectAll.indeterminate = false; processButton.disabled = true; return } pendingList.innerHTML = rows.map((row, index) => '<label class="pending-row"><input type="checkbox" class="pending-checkbox" data-index="' + index + '"><span><strong>' + escapeHtml(row.studentid) + '</strong> · ' + escapeHtml(row.githubid) + '<br><span class="meta">' + escapeHtml(row.timestamp_utc) + '</span></span><span class="status pending" data-status="' + index + '">Pending</span></label>').join(""); pendingList._rows = rows; boxes().forEach(b => b.addEventListener("change", updateSelection)); updateSelection() }
-        async function loadPending() { pendingList.innerHTML = '<div class="empty">Loading pending registrations…</div>'; try { const response = await fetch(WORKER_URL + "/admin/pending", { headers: { Authorization: "Bearer " + sessionToken } }); const data = await response.json(); if (!response.ok) { show(pendingResult, data.error || "Could not load pending registrations.", "error"); return } renderPending(data.pending || []) } catch { show(pendingResult, "Could not contact the Worker.", "error") } }
-        loginForm.addEventListener("submit", async event => { event.preventDefault(); loginButton.disabled = true; show(loginResult, "Signing in…"); try { const response = await fetch(WORKER_URL + "/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: document.getElementById("adminPassword").value }) }); const data = await response.json(); if (!response.ok || !data.token) { show(loginResult, "Sign-in failed. Check the password.", "error"); return } sessionToken = data.token; pendingPanel.hidden = false; show(loginResult, "Signed in.", "success"); await loadPending() } catch { show(loginResult, "Could not contact the Worker.", "error") } finally { loginButton.disabled = false } });
-        selectAll.addEventListener("change", () => { boxes().forEach(box => box.checked = selectAll.checked); updateSelection() }); refreshButton.addEventListener("click", loadPending);
-        processButton.addEventListener("click", async () => { const rows = pendingList._rows || [], selected = boxes().map((box, index) => box.checked ? index : -1).filter(index => index >= 0); if (!selected.length) return; processButton.disabled = true; for (const index of selected) { const row = rows[index], status = document.querySelector('[data-status="' + index + '"]'); status.className = "status submitted"; status.textContent = "Processing…"; try { const response = await fetch(WORKER_URL + "/admin/process", { method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + sessionToken }, body: JSON.stringify({ timestamp_utc: row.timestamp_utc, studentid: row.studentid, githubid: row.githubid }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || "processing failed"); status.textContent = "Submitted"; boxes()[index].checked = false } catch (error) { status.className = "status error"; status.textContent = error.message || "Failed" } } updateSelection() });
-    </script>
-</body>
 
+        renderPending(data.pending || []);
+      } catch {
+        showResult(
+          pendingResult,
+          "Could not contact the Worker.",
+          "error"
+        );
+      }
+    }
+
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      loginButton.disabled = true;
+      showResult(loginResult, "Signing in…");
+
+      try {
+        const password = document.getElementById("adminPassword").value;
+        const response = await fetch(`${WORKER_URL}/admin/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ password })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.token) {
+          showResult(
+            loginResult,
+            data.error || "Sign-in failed.",
+            "error"
+          );
+          return;
+        }
+
+        sessionToken = data.token;
+        pendingPanel.hidden = false;
+        showResult(loginResult, "Signed in.", "success");
+        await loadPending();
+      } catch {
+        showResult(loginResult, "Could not contact the Worker.", "error");
+      } finally {
+        loginButton.disabled = false;
+      }
+    });
+
+    selectAll.addEventListener("change", () => {
+      checkboxes().forEach((box) => {
+        box.checked = selectAll.checked;
+      });
+      updateSelection();
+    });
+
+    refreshButton.addEventListener("click", loadPending);
+
+    processButton.addEventListener("click", async () => {
+      const rows = pendingList._rows || [];
+      const selected = checkboxes()
+        .map((box, index) => (box.checked ? index : -1))
+        .filter((index) => index >= 0);
+
+      if (!selected.length) return;
+
+      processButton.disabled = true;
+
+      for (const index of selected) {
+        const row = rows[index];
+        const status = document.querySelector(
+          `[data-status="${index}"]`
+        );
+
+        status.className = "status submitted";
+        status.textContent = "Processing…";
+
+        try {
+          const response = await fetch(`${WORKER_URL}/admin/process`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${sessionToken}`
+            },
+            body: JSON.stringify({
+              timestamp_utc: row.timestamp_utc,
+              student_id: row.student_id,
+              github_username: row.github_username,
+              github_id: row.github_id
+            })
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || "Processing failed");
+          }
+
+          status.textContent = "Submitted";
+          checkboxes()[index].checked = false;
+        } catch (error) {
+          status.className = "status error";
+          status.textContent = error.message || "Failed";
+        }
+      }
+
+      updateSelection();
+    });
+  </script>
+</body>
 </html>
