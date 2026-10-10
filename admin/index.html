@@ -4,261 +4,60 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CSC-30067 Teaching Administration</title>
-  <style>
-    :root {
-      --navy: #14213d;
-      --blue: #2563eb;
-      --background: #f4f7fb;
-      --ink: #182230;
-      --muted: #667085;
-      --border: #d9e0ea;
-      --red: #b42318;
-      --green: #067647;
-      --amber: #b54708;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--background);
-      color: var(--ink);
-      font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
-    }
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 76px;
-      padding: 0 max(22px, calc((100% - 1180px) / 2));
-      background: var(--navy);
-      color: white;
-    }
-
-    .brand small { display: block; opacity: .72; }
-    .brand strong { font-size: 21px; }
-
-    .sign-in-button {
-      padding: 10px 16px;
-      border: 1px solid #ffffff80;
-      border-radius: 7px;
-      background: #ffffff14;
-      color: white;
-      font: inherit;
-      font-weight: 650;
-      cursor: pointer;
-    }
-
-    .sign-in-button:hover { background: #ffffff26; }
-
-    main {
-      max-width: 1180px;
-      margin: 24px auto;
-      padding: 0 20px;
-    }
-
-    .dashboard {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 20px;
-    }
-
-    .column {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      min-width: 0;
-    }
-
-    .panel {
-      padding: 18px;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      box-shadow: 0 2px 8px #14213d0a;
-    }
-
-    .panel h2 {
-      margin: 0 0 4px;
-      font-size: 18px;
-    }
-
-    .panel p {
-      margin: 0 0 14px;
-      color: var(--muted);
-    }
-
-    .list {
-      height: 190px;
-      overflow-y: auto;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-    }
-
-    .list.pending-list { height: 430px; }
-
-    .list-row {
-      padding: 11px 14px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .list-row:last-child { border-bottom: 0; }
-    .list-row strong { display: block; }
-    .meta { color: var(--muted); font-size: 12px; }
-    .empty { padding: 18px; color: var(--muted); }
-
-    .pending-row {
-      display: grid;
-      grid-template-columns: 28px minmax(0, 1fr) 95px;
-      gap: 8px;
-      align-items: center;
-      padding: 12px 10px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .pending-row:last-child { border-bottom: 0; }
-    .pending-row input { width: 17px; height: 17px; }
-    .status { font-size: 12px; text-align: right; }
-    .status.pending { color: var(--amber); }
-    .status.submitted { color: var(--green); }
-    .status.error { color: var(--red); }
-
-    .toolbar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      margin: 14px 0;
-    }
-
-    .toolbar label { margin-right: auto; }
-
-    .button {
-      padding: 10px 14px;
-      border: 0;
-      border-radius: 7px;
-      background: var(--blue);
-      color: white;
-      font: inherit;
-      font-weight: 650;
-      cursor: pointer;
-    }
-
-    .button.secondary { background: #475467; }
-    .button:disabled { opacity: .5; cursor: not-allowed; }
-
-    .result {
-      display: none;
-      margin-top: 14px;
-      padding: 12px;
-      border-radius: 8px;
-      background: #eff6ff;
-      color: var(--ink);
-    }
-
-    .result.error { background: #fee4e2; color: var(--red); }
-    .result.success { background: #ecfdf3; color: var(--green); }
-
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      display: none;
-      place-items: center;
-      padding: 20px;
-      background: #10182899;
-    }
-
-    .modal {
-      width: min(400px, 100%);
-      padding: 22px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 18px 60px #0005;
-    }
-
-    .modal h2 { margin: 0 0 6px; }
-    .modal p { margin: 0 0 16px; color: var(--muted); }
-    .modal label { display: block; margin-bottom: 6px; font-weight: 650; }
-
-    .modal input {
-      width: 100%;
-      padding: 11px;
-      border: 1px solid #bfc9d8;
-      border-radius: 7px;
-      font: inherit;
-    }
-
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 18px;
-    }
-
-    .button.outline {
-      background: white;
-      color: var(--ink);
-      border: 1px solid var(--border);
-    }
-
-    @media (max-width: 780px) {
-      .dashboard { grid-template-columns: 1fr; }
-      .list.pending-list { height: 320px; }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <div class="brand">
-      <small>CSC-30067 · 2026/27</small>
-      <strong>Teaching Administration</strong>
+  <header class="admin-header">
+    <div class="container header-content">
+      <div>
+        <p class="eyebrow">CSC-30067 · 2026/27</p>
+        <h1>Teaching Administration</h1>
+      </div>
+      <button id="signInButton" class="button button-header" type="button">
+        Sign in
+      </button>
     </div>
-
-    <button id="signInButton" class="sign-in-button" type="button">
-      Sign in
-    </button>
   </header>
 
-  <main>
+  <main class="container admin-main">
     <div id="dashboard" class="dashboard" hidden>
-      <div class="column">
-        <section class="panel">
+      <div class="dashboard-column">
+        <section class="card dashboard-panel">
           <h2>Registered students</h2>
-          <p>Students currently registered.</p>
-          <div id="registeredList" class="list">
+          <p class="panel-description">Students currently registered.</p>
+          <div id="registeredList" class="record-list">
             <div class="empty">Loading…</div>
           </div>
         </section>
 
-        <section class="panel">
+        <section class="card dashboard-panel">
           <h2>Registration history</h2>
-          <p>Completed registration processing.</p>
-          <div id="historyList" class="list">
+          <p class="panel-description">Completed registration processing.</p>
+          <div id="historyList" class="record-list">
             <div class="empty">Loading…</div>
           </div>
         </section>
 
-        <section class="panel">
+        <section class="card dashboard-panel">
           <h2>Rejected registrations</h2>
-          <p>Registrations rejected during processing.</p>
-          <div id="rejectedList" class="list">
+          <p class="panel-description">Registrations rejected during processing.</p>
+          <div id="rejectedList" class="record-list">
             <div class="empty">Loading…</div>
           </div>
         </section>
       </div>
 
-      <div class="column">
-        <section class="panel">
+      <div class="dashboard-column">
+        <section class="card dashboard-panel pending-panel">
           <h2>Pending registrations</h2>
-          <p>Select registrations to process individually.</p>
+          <p class="panel-description">Select registrations to process individually.</p>
 
-          <div class="toolbar">
-            <label>
+          <div class="dashboard-toolbar">
+            <label class="select-all-label">
               <input id="selectAllPending" type="checkbox">
               Select all
             </label>
-            <button id="refreshButton" class="button secondary" type="button">
+            <button id="refreshButton" class="button button-secondary" type="button">
               Refresh
             </button>
             <button id="processButton" class="button" type="button" disabled>
@@ -266,18 +65,24 @@
             </button>
           </div>
 
-          <div id="pendingList" class="list pending-list">
+          <div id="pendingList" class="record-list pending-list">
             <div class="empty">Loading…</div>
           </div>
-
-          <div id="pendingResult" class="result" role="status"></div>
         </section>
       </div>
+
+      <div
+        id="dashboardResult"
+        class="dashboard-result"
+        role="status"
+        aria-live="polite"
+        hidden
+      ></div>
     </div>
   </main>
 
-  <div id="signInModal" class="modal-backdrop">
-    <form id="signInForm" class="modal">
+  <div id="signInModal" class="modal-backdrop" hidden>
+    <form id="signInForm" class="modal" novalidate>
       <h2>Administrator sign in</h2>
       <p>Enter the administrator password to continue.</p>
 
@@ -285,7 +90,7 @@
       <input id="password" type="password" autocomplete="current-password" required>
 
       <div class="modal-actions">
-        <button id="cancelSignIn" class="button outline" type="button">
+        <button id="cancelSignIn" class="button button-secondary" type="button">
           Cancel
         </button>
         <button id="submitSignIn" class="button" type="submit">
@@ -293,7 +98,7 @@
         </button>
       </div>
 
-      <div id="signInResult" class="result" role="status"></div>
+      <div id="signInResult" class="status-box" role="status" aria-live="polite" hidden></div>
     </form>
   </div>
 
@@ -315,19 +120,19 @@
     const historyList = document.getElementById("historyList");
     const rejectedList = document.getElementById("rejectedList");
     const pendingList = document.getElementById("pendingList");
-    const pendingResult = document.getElementById("pendingResult");
+    const dashboardResult = document.getElementById("dashboardResult");
     const selectAll = document.getElementById("selectAllPending");
     const refreshButton = document.getElementById("refreshButton");
     const processButton = document.getElementById("processButton");
 
-    function showResult(element, message, kind = "") {
-      element.className = `result ${kind}`;
-      element.style.display = "block";
+    function showStatus(element, message, kind = "") {
       element.textContent = message;
+      element.className = kind ? `status-box ${kind}` : "status-box";
+      element.hidden = false;
     }
 
-    function hideResult(element) {
-      element.style.display = "none";
+    function hideStatus(element) {
+      element.hidden = true;
       element.textContent = "";
     }
 
@@ -336,12 +141,12 @@
         "&": "&amp;",
         "<": "&lt;",
         ">": "&gt;",
-        "\"": "&quot;",
+        '"': "&quot;",
         "'": "&#39;"
       };
 
       return String(value).replace(
-        /[&<>\"']/g,
+        /[&<>"']/g,
         (character) => entities[character]
       );
     }
@@ -369,96 +174,81 @@
     }
 
     function renderRegistered(rows) {
-      renderSimpleList(
-        registeredList,
-        rows,
-        (row) => `
-          <div class="list-row">
-            <strong>
-              ${escapeHtml(row.student_id)} ·
-              ${escapeHtml(row.github_username)}
-            </strong>
-            <span class="meta">
-              GitHub ID ${escapeHtml(row.github_id)}
-            </span>
-          </div>
-        `
-      );
+      renderSimpleList(registeredList, rows, (row) => `
+        <div class="record-row">
+          <strong>
+            ${escapeHtml(row.student_id)} ·
+            ${escapeHtml(row.github_username)}
+          </strong>
+          <span class="meta">
+            GitHub ID ${escapeHtml(row.github_id)}
+          </span>
+        </div>
+      `);
     }
 
     function renderHistory(rows) {
-      renderSimpleList(
-        historyList,
-        rows,
-        (row) => `
-          <div class="list-row">
-            <strong>
-              ${escapeHtml(row.student_id)} ·
-              ${escapeHtml(row.github_username)}
-            </strong>
-            <span class="meta">
-              ${escapeHtml(row.timestamp_utc)}
-            </span>
-          </div>
-        `
-      );
+      renderSimpleList(historyList, rows, (row) => `
+        <div class="record-row">
+          <strong>
+            ${escapeHtml(row.student_id)} ·
+            ${escapeHtml(row.github_username)}
+          </strong>
+          <span class="meta">
+            ${escapeHtml(row.timestamp_utc)}
+          </span>
+        </div>
+      `);
     }
 
     function renderRejected(rows) {
-      renderSimpleList(
-        rejectedList,
-        rows,
-        (row) => `
-          <div class="list-row">
+      renderSimpleList(rejectedList, rows, (row) => `
+        <div class="record-row">
+          <strong>
+            ${escapeHtml(row.student_id)} ·
+            ${escapeHtml(row.github_username)}
+          </strong>
+          <span class="meta">
+            GitHub ID ${escapeHtml(row.github_id)} ·
+            ${escapeHtml(row.motivation)}<br>
+            ${escapeHtml(row.timestamp_utc)}
+          </span>
+        </div>
+      `);
+    }
+
+    function renderPending(rows) {
+      pendingList._rows = rows;
+
+      if (!rows.length) {
+        pendingList.innerHTML =
+          '<div class="empty">No pending registrations.</div>';
+        updateSelection();
+        return;
+      }
+
+      pendingList.innerHTML = rows.map((row, index) => `
+        <label class="pending-row">
+          <input
+            class="pending-checkbox"
+            type="checkbox"
+            data-index="${index}"
+          >
+          <span>
             <strong>
               ${escapeHtml(row.student_id)} ·
               ${escapeHtml(row.github_username)}
             </strong>
             <span class="meta">
               GitHub ID ${escapeHtml(row.github_id)} ·
-              ${escapeHtml(row.motivation)}<br>
               ${escapeHtml(row.timestamp_utc)}
             </span>
-          </div>
-        `
-      );
-    }
-
-    function renderPending(rows) {
-      if (!rows.length) {
-        pendingList.innerHTML =
-          '<div class="empty">No pending registrations.</div>';
-        pendingList._rows = [];
-        updateSelection();
-        return;
-      }
-
-      pendingList.innerHTML = rows
-        .map((row, index) => `
-          <label class="pending-row">
-            <input
-              class="pending-checkbox"
-              type="checkbox"
-              data-index="${index}"
-            >
-            <span>
-              <strong>
-                ${escapeHtml(row.student_id)} ·
-                ${escapeHtml(row.github_username)}
-              </strong>
-              <span class="meta">
-                GitHub ID ${escapeHtml(row.github_id)} ·
-                ${escapeHtml(row.timestamp_utc)}
-              </span>
-            </span>
-            <span class="status pending" data-status="${index}">
-              Pending
-            </span>
-          </label>
-        `)
-        .join("");
-
-      pendingList._rows = rows;
+          </span>
+          <span class="status pending" data-status="${index}">
+            Pending
+          </span>
+        </label>
+      `).join("");
 
       checkboxes().forEach((checkbox) => {
         checkbox.addEventListener("change", updateSelection);
@@ -484,14 +274,14 @@
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || `Could not load ${path}`);
+        throw new Error(`${path}: ${data.error || "request failed"}`);
       }
 
       render(data);
     }
 
     async function loadAllPanels() {
-      hideResult(pendingResult);
+      hideStatus(dashboardResult);
 
       try {
         await Promise.all([
@@ -517,23 +307,23 @@
           )
         ]);
       } catch (error) {
-        showResult(
-          pendingResult,
+        showStatus(
+          dashboardResult,
           error.message || "Could not load dashboard data.",
-          "error"
+          "status-error"
         );
       }
     }
 
     function openSignIn() {
-      signInModal.style.display = "grid";
+      signInModal.hidden = false;
       passwordInput.value = "";
-      signInResult.style.display = "none";
+      hideStatus(signInResult);
       passwordInput.focus();
     }
 
     function closeSignIn() {
-      signInModal.style.display = "none";
+      signInModal.hidden = true;
     }
 
     function clearDashboard() {
@@ -545,6 +335,7 @@
       selectAll.checked = false;
       selectAll.indeterminate = false;
       processButton.disabled = true;
+      hideStatus(dashboardResult);
     }
 
     function signOut() {
@@ -555,7 +346,13 @@
       clearDashboard();
     }
 
-    signInButton.addEventListener("click", openSignIn);
+    signInButton.addEventListener("click", () => {
+      if (sessionToken) {
+        signOut();
+      } else {
+        openSignIn();
+      }
+    });
 
     cancelSignIn.addEventListener("click", closeSignIn);
 
@@ -566,14 +363,12 @@
     signInForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       submitSignIn.disabled = true;
-      showResult(signInResult, "Signing in…");
+      showStatus(signInResult, "Signing in…");
 
       try {
         const response = await fetch(`${WORKER_URL}/admin/login`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ password: passwordInput.value })
         });
 
@@ -587,10 +382,13 @@
         closeSignIn();
         dashboard.hidden = false;
         signInButton.textContent = "Sign out";
-        signInButton.onclick = signOut;
         await loadAllPanels();
       } catch (error) {
-        showResult(signInResult, error.message || "Sign-in failed.", "error");
+        showStatus(
+          signInResult,
+          error.message || "Sign-in failed.",
+          "status-error"
+        );
       } finally {
         submitSignIn.disabled = false;
       }
@@ -630,9 +428,7 @@
           try {
             const response = await authenticatedFetch("/admin/process", {
               method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 timestamp_utc: row.timestamp_utc,
                 student_id: row.student_id,
