@@ -421,6 +421,46 @@
 
     refreshButton.addEventListener("click", loadAllPanels);
 
+    async function waitForProcessedRows(processedRows) {
+      const processedKeys = new Set(
+        processedRows.map((row) =>
+          [
+            row.timestamp_utc,
+            row.student_id,
+            row.github_username,
+            row.github_id
+          ].join("|")
+        )
+      );
+
+      const maxAttempts = 12;
+      const delayMs = 5000;
+
+      for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+        await loadAllPanels();
+
+        const currentRows = pendingList._rows || [];
+
+        const remaining = currentRows.filter((row) =>
+          processedKeys.has(
+            [
+              row.timestamp_utc,
+              row.student_id,
+              row.github_username,
+              row.github_id
+            ].join("|")
+          )
+        );
+
+        if (!remaining.length) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     processButton.addEventListener("click", async () => {
       const rows = pendingList._rows || [];
       const selectedIndexes = checkboxes()
@@ -428,6 +468,10 @@
         .filter((index) => index >= 0);
 
       if (!selectedIndexes.length) return;
+
+      const selectedRows = selectedIndexes
+        .map((index) => rows[index])
+        .filter(Boolean);
 
       processButton.disabled = true;
       refreshButton.disabled = true;
@@ -471,7 +515,24 @@
       } finally {
         refreshButton.disabled = false;
         selectAll.disabled = false;
-        await loadAllPanels();
+
+        const completed = await waitForProcessedRows(selectedRows);
+
+        if (completed) {
+          showStatus(
+            dashboardResult,
+            "Selected registrations processed successfully.",
+            "status-success"
+          );
+        } else {
+          showStatus(
+            dashboardResult,
+            "Processing was submitted, but some registrations are still pending. GitHub Actions may still be running.",
+            "status-error"
+          );
+        }
+
+        updateSelection();
       }
     });
   </script>
