@@ -1,246 +1,104 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Register for AY 2026/27 | CSC-30067</title>
-  <meta
-    name="description"
-    content="Registration page for CSC-30067 in the 2026/27 academic year."
-  >
-  <link rel="stylesheet" href="../styles.css">
+  <title>CSC-30067 Registration</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <a class="skip-link" href="#main-content">Skip to content</a>
 
-  <header class="site-header site-header-compact">
+  <header class="site-header">
     <div class="container">
-      <p class="eyebrow">CSC-30067</p>
-
-      <h1>Registration for 2026/27</h1>
-
-      <p class="lead">
-        Use this form to register your student ID and GitHub username to access the starting code for the
-        2026/27 academic year.
-      </p>
-
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="../">Home</a>
-        <span aria-hidden="true">/</span>
-        <span>Register 2026/27</span>
-      </nav>
-
-      <!-- <p>Coming soon...</p> -->
+      <p class="eyebrow">CSC-30067 · 2026/27</p>
+      <h1>Teaching repository registration</h1>
+      <p class="lead">Register your GitHub account for the module’s teaching repository.</p>
     </div>
   </header>
 
-  <main id="main">
-    <section class="section">
-      <div class="container narrow">
+  <main id="main-content" class="container section">
+    <section class="card before-you-begin" aria-labelledby="before-title">
+      <h2 id="before-title">Before you begin</h2>
+      <p class="lead">Make sure you have your eight-digit university student ID and your GitHub username ready.</p>
+      <ul>
+        <li>Your student ID must be authorised for this module.</li>
+        <li>Use your GitHub username, not your email address.</li>
+        <li>Your registration is checked before it is submitted for processing.</li>
+      </ul>
+    </section>
 
-        <article class="card">
-          <h2>Before you begin</h2>
+    <section class="card form-card" aria-labelledby="registration-title">
+      <h2 id="registration-title">Register your account</h2>
+      <p class="lead">Enter your university student ID and GitHub username.</p>
 
-          <ul class="checklist">
-            <li>Use your 8-digit student ID.</li>
-            <li>Enter your GitHub username.</li>
-            <li>Submit the form only once.</li>
-          </ul>
-        </article>
+      <form id="registrationForm">
+        <div class="form-group">
+          <label for="studentId">Student ID</label>
+          <input id="studentId" name="student_id" inputmode="numeric" autocomplete="off" pattern="[0-9]{8}" maxlength="8" required>
+          <p class="field-help">Enter your eight-digit student ID.</p>
+        </div>
 
-        <article class="card form-card">
-          <h2>Registration form</h2>
+        <div class="form-group">
+          <label for="githubUsername">GitHub username</label>
+          <input id="githubUsername" name="github_username" autocomplete="username" maxlength="39" required>
+          <p class="field-help">Use your GitHub username, not your email address.</p>
+        </div>
 
-          <form id="registration-form" novalidate>
-            <div class="form-group">
-              <label for="student-id">Student ID</label>
+        <button id="submitButton" class="button button-primary" type="submit">Submit registration</button>
+      </form>
 
-              <input
-                id="student-id"
-                name="student_id"
-                type="text"
-                inputmode="numeric"
-                autocomplete="off"
-                maxlength="8"
-                pattern="[0-9]{8}"
-                required
-                aria-describedby="student-id-help"
-              >
-
-              <p id="student-id-help" class="field-help">
-                Enter your 8-digit student ID.
-              </p>
-            </div>
-
-            <div class="form-group">
-              <label for="github-username">GitHub username</label>
-
-              <input
-                id="github-username"
-                name="github_username"
-                type="text"
-                autocomplete="username"
-                required
-                aria-describedby="github-username-help"
-              >
-
-              <p id="github-username-help" class="field-help">
-                Enter your GitHub username, for example
-                <code>octocat</code>.
-              </p>
-            </div>
-
-            <button
-              class="button button-primary"
-              type="submit"
-            >
-              Submit registration
-            </button>
-          </form>
-
-          <div
-            id="form-status"
-            class="status-box"
-            role="status"
-            aria-atomic="true"
-          >
-            The form is ready.
-          </div>
-        </article>
-
-      </div>
+      <div id="registrationStatus" class="status-box" role="status" aria-live="polite" hidden></div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="container">
-      <p>
-        <a class="text-link" href="../">
-          Return to the homepage
-        </a>
-      </p>
-    </div>
+    <div class="container"><small>CSC-30067 teaching administration</small></div>
   </footer>
 
   <script>
-    const WORKER_URL =
-      "https://module-registration-relay.marco-ortolani.workers.dev";
+    const WORKER_URL = "https://module-registration-relay.marco-ortolani.workers.dev";
+    const form = document.getElementById("registrationForm");
+    const submitButton = document.getElementById("submitButton");
+    const status = document.getElementById("registrationStatus");
 
-    const form = document.getElementById("registration-form");
-    const statusBox = document.getElementById("form-status");
-    const submitButton = form.querySelector('button[type="submit"]');
-
-    function setStatus(message, type = "info") {
-      statusBox.textContent = message;
-      statusBox.className = "status-box";
-
-      if (type === "success") {
-        statusBox.classList.add("status-success");
-      } else if (type === "error") {
-        statusBox.classList.add("status-error");
-      } else {
-        statusBox.classList.add("status-info");
-      }
+    function showStatus(message, kind) {
+      status.hidden = false;
+      status.className = `status-box ${kind}`;
+      status.textContent = message;
     }
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-
-      const studentId = document
-        .getElementById("student-id")
-        .value
-        .trim();
-
-      const githubUsername = document
-        .getElementById("github-username")
-        .value
-        .trim();
+      const studentId = document.getElementById("studentId").value.trim();
+      const githubUsername = document.getElementById("githubUsername").value.trim();
 
       if (!/^[0-9]{8}$/.test(studentId)) {
-        setStatus(
-          "Please enter a valid 8-digit student ID.",
-          "error"
-        );
+        showStatus("Enter an eight-digit student ID.", "status-error");
         return;
       }
-
-      if (!githubUsername) {
-        setStatus(
-          "Please enter your GitHub username.",
-          "error"
-        );
+      if (!/^[A-Za-z0-9-]{1,39}$/.test(githubUsername)) {
+        showStatus("Enter a valid GitHub username.", "status-error");
         return;
       }
 
       submitButton.disabled = true;
-      submitButton.textContent = "Submitting...";
-
-      setStatus(
-        "Submitting your registration...",
-        "info"
-      );
+      showStatus("Submitting registration…", "status-info");
 
       try {
         const response = await fetch(WORKER_URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            student_id: studentId,
-            github_username: githubUsername
-          })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ student_id: studentId, github_username: githubUsername })
         });
-
-        let result = null;
-
-        try {
-          result = await response.json();
-        } catch {
-          result = null;
-        }
-
-        if (!response.ok || result?.ok === false) {
-          const message =
-            result?.error === "forbidden-origin"
-              ? "This page is not allowed to submit to the registration service."
-              : result?.error === "invalid-student-id"
-              ? "Please enter a valid 8-digit student ID."
-              : result?.error === "missing-github-username"
-              ? "Please enter your GitHub username."
-              : result?.error === "github-username-not-found"
-              ? "That GitHub username could not be found."
-              : result?.error === "github-validation-unavailable"
-              ? "GitHub username validation is temporarily unavailable."
-              : result?.error === "not-allowed"
-              ? "This student ID is not allowed to register."
-              : result?.error === "already-registered"
-              ? "This student ID has already been registered."
-              : result?.error === "backend-validation-unavailable"
-              ? "The validation service is temporarily unavailable."
-              : result?.error === "github-dispatch-failed"
-              ? "The registration service could not complete your submission."
-              : "The registration request could not be submitted.";
-
-          setStatus(message, "error");
-          return;
-        }
-
-        setStatus(
-          "Your registration request has been submitted. Final validation happens shortly afterwards.",
-          "success"
-        );
-
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Registration could not be submitted.");
+        showStatus("Your registration has been submitted successfully.", "status-success");
         form.reset();
-      } catch {
-        setStatus(
-          "A network error prevented submission. Please try again.",
-          "error"
-        );
+      } catch (error) {
+        showStatus(error.message || "Registration could not be submitted.", "status-error");
       } finally {
         submitButton.disabled = false;
-        submitButton.textContent = "Submit registration";
       }
     });
   </script>
