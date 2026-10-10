@@ -1,4 +1,5 @@
 /* Public registration page styles */
+
 :root {
   --bg: #f6f7fb;
   --surface: #ffffff;
@@ -16,46 +17,215 @@
   --container: 960px;
 }
 
-*, *::before, *::after { box-sizing: border-box; }
-[hidden] { display: none !important; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-html { font-family: Arial, sans-serif; color: var(--text); background: var(--bg); line-height: 1.5; }
-body { margin: 0; }
-button, input { font: inherit; }
-button:disabled { cursor: not-allowed; opacity: 0.7; }
-.container { width: min(var(--container), calc(100% - 2rem)); margin: 0 auto; }
+[hidden] {
+  display: none !important;
+}
 
-.skip-link { position: absolute; top: 0.75rem; left: -9999px; z-index: 1000; padding: 0.75rem 1rem; border: 2px solid var(--primary); border-radius: 0.5rem; background: #fff; color: var(--text); }
-.skip-link:focus { left: 0.75rem; }
+html {
+  font-family: Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.5;
+}
 
-.site-header { padding: 4rem 0 3rem; background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
-.eyebrow { margin: 0 0 0.75rem; color: var(--muted); font-size: 0.9rem; letter-spacing: 0.06em; text-transform: uppercase; }
-h1, h2 { line-height: 1.2; margin-top: 0; }
-h1 { max-width: 18ch; margin-bottom: 1rem; font-size: clamp(2rem, 4vw, 3.5rem); }
-h2 { margin-bottom: 0.75rem; font-size: 1.4rem; }
-.lead { max-width: 60ch; color: var(--muted); font-size: 1.05rem; }
-.section { padding: 2rem 0 4rem; }
+body {
+  margin: 0;
+}
 
-.card { width: 100%; padding: 1.5rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
-.before-you-begin { margin-bottom: 1.5rem; }
-.before-you-begin ul { margin: 1rem 0 0; padding-left: 1.25rem; }
-.form-card { width: min(100%, 720px); margin: 0 auto; }
-.form-group { margin-bottom: 1.25rem; }
-label { display: block; margin-bottom: 0.45rem; font-weight: 600; }
-input { width: 100%; padding: 0.85rem 0.95rem; border: 1px solid var(--border); border-radius: 0.75rem; color: var(--text); background: #fff; }
-input:focus-visible { outline: 3px solid rgba(29, 78, 216, 0.18); border-color: var(--primary); }
-.field-help { margin: 0.45rem 0 0; color: var(--muted); font-size: 0.95rem; }
-.button { display: inline-block; padding: 0.85rem 1.2rem; border: 0; border-radius: 999px; font-weight: 600; cursor: pointer; }
-.button-primary { background: var(--primary); color: #fff; }
-.button-primary:hover, .button-primary:focus-visible { background: var(--primary-hover); }
-.status-box { margin-top: 1.25rem; padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: 0.9rem; }
-.status-info { background: #eef4ff; border-color: #bfd3ff; }
-.status-success { background: var(--success-bg); border-color: var(--success-border); }
-.status-error { background: var(--error-bg); border-color: var(--error-border); }
-.site-footer { padding: 1.5rem 0 3rem; color: var(--muted); }
+button,
+input {
+  font: inherit;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.container {
+  width: min(var(--container), calc(100% - 2rem));
+  margin: 0 auto;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0.75rem;
+  left: -9999px;
+  z-index: 1000;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--primary);
+  border-radius: 0.5rem;
+  background: #ffffff;
+  color: var(--text);
+}
+
+.skip-link:focus {
+  left: 0.75rem;
+}
+
+.site-header {
+  padding: 4rem 0 3rem;
+  background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--border);
+}
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  line-height: 1.2;
+  margin-top: 0;
+}
+
+h1 {
+  max-width: 18ch;
+  margin-bottom: 1rem;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+h2 {
+  margin-bottom: 0.75rem;
+  font-size: 1.4rem;
+}
+
+.lead {
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.section {
+  padding: 2rem 0 4rem;
+}
+
+.card {
+  width: 100%;
+  padding: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.before-you-begin {
+  margin-bottom: 1.5rem;
+}
+
+.before-you-begin ul {
+  margin: 1rem 0 0;
+  padding-left: 1.25rem;
+}
+
+.contact-notice {
+  margin: 1.5rem 0 0;
+  padding: 1rem 1.1rem;
+  border-left: 5px solid var(--primary);
+  border-radius: 0.5rem;
+  background: #eef4ff;
+  font-size: 1.05rem;
+}
+
+.form-card {
+  margin: 0;
+}
+
+.form-group {
+  margin-bottom: 1.25rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  padding: 0.85rem 0.95rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  color: var(--text);
+  background: #ffffff;
+}
+
+input:focus-visible {
+  outline: 3px solid rgba(29, 78, 216, 0.18);
+  border-color: var(--primary);
+}
+
+.field-help {
+  margin: 0.45rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.85rem 1.2rem;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button-primary {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.button-primary:hover,
+.button-primary:focus-visible {
+  background: var(--primary-hover);
+}
+
+.status-box {
+  margin-top: 1.25rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+}
+
+.status-info {
+  background: #eef4ff;
+  border-color: #bfd3ff;
+}
+
+.status-success {
+  background: var(--success-bg);
+  border-color: var(--success-border);
+}
+
+.status-error {
+  background: var(--error-bg);
+  border-color: var(--error-border);
+}
+
+.site-footer {
+  padding: 1.5rem 0 3rem;
+  color: var(--muted);
+}
 
 @media (max-width: 600px) {
-  .site-header { padding: 2.75rem 0 2.25rem; }
-  .section { padding-top: 1.25rem; }
-  .card { padding: 1.15rem; }
+  .site-header {
+    padding: 2.75rem 0 2.25rem;
+  }
+
+  .section {
+    padding-top: 1.25rem;
+  }
+
+  .card {
+    padding: 1.15rem;
+  }
 }
