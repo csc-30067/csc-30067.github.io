@@ -81,6 +81,9 @@
       "already-registered":
         "This student ID has already been registered.",
 
+      "github-account-already-registered":
+        "This GitHub account has already been registered. Please use a different GitHub account.",
+
       "already-pending":
         "This student ID has already been submitted and is awaiting processing. Please do not submit it again.",
 
@@ -120,78 +123,26 @@
       submitButton.disabled = true;
       showStatus("Submitting registration…", "status-info");
 
-      // try {
-      //   const response = await fetch(WORKER_URL, {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify({ student_id: studentId, github_username: githubUsername })
-      //   });
-      //   const data = await response.json();
-      //   if (!response.ok || data.ok === false) {
-      //     throw new Error(
-      //       errorMessages[data.error] ||
-      //       "The registration request could not be submitted."
-      //     );
-      //   }
-      //   showStatus("Your registration has been submitted successfully.", "status-success");
-      //   form.reset();
-      // } catch (error) {
-      //   showStatus(error.message || "Registration could not be submitted.", "status-error");
-      // } finally {
-      //   submitButton.disabled = false;
-      // }
-      const response = await fetch(WORKER_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          student_id: studentId,
-          github_username: githubUsername,
-        }),
-      });
-
-      let result;
-
       try {
-        result = await response.json();
-      } catch {
-        showError("The registration request could not be submitted.");
-        return;
-      }
-
-      if (!response.ok) {
-        switch (result.error) {
-          case "github-account-already-registered":
-            showError(
-              "This GitHub account is already registered. Please use a different GitHub account."
-            );
-            return;
-
-          case "already-registered":
-            showError("This student ID is already registered.");
-            return;
-
-          case "already-pending":
-            showError("This student ID already has a pending registration.");
-            return;
-
-          case "not-allowed":
-            showError("This student ID is not eligible for registration.");
-            return;
-
-          case "github-username-not-found":
-            showError("That GitHub username could not be found.");
-            return;
-
-          default:
-            showError("The registration request could not be submitted.");
-            return;
+        const response = await fetch(WORKER_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ student_id: studentId, github_username: githubUsername })
+        });
+        const data = await response.json();
+        if (!response.ok || data.ok === false) {
+          throw new Error(
+            errorMessages[data.error] ||
+            "The registration request could not be submitted."
+          );
         }
+        showStatus("Your registration has been submitted successfully.", "status-success");
+        form.reset();
+      } catch (error) {
+        showStatus(error.message || "Registration could not be submitted.", "status-error");
+      } finally {
+        submitButton.disabled = false;
       }
-
-      showSuccess("Your registration has been submitted successfully.");
-
     });
   </script>
 </body>
