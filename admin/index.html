@@ -125,6 +125,24 @@
     const refreshButton = document.getElementById("refreshButton");
     const processButton = document.getElementById("processButton");
 
+    function formatUkDateTime(value) {
+      if (!value) return "";
+
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value;
+
+      return new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Europe/London",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false
+      }).format(date);
+    }
+
     function showStatus(element, message, kind = "") {
       element.textContent = message;
       element.className = kind ? `status-box ${kind}` : "status-box";
@@ -195,7 +213,7 @@
             ${escapeHtml(row.github_username)}
           </strong>
           <span class="meta">
-            ${escapeHtml(row.timestamp_utc)}
+            ${escapeHtml(formatUkDateTime(row.timestamp_utc))}
           </span>
         </div>
       `);
@@ -211,7 +229,7 @@
           <span class="meta">
             GitHub ID ${escapeHtml(row.github_id)} ·
             ${escapeHtml(row.motivation)}<br>
-            ${escapeHtml(row.timestamp_utc)}
+            ${escapeHtml(formatUkDateTime(row.timestamp_utc))}
           </span>
         </div>
       `);
@@ -241,7 +259,7 @@
             </strong>
             <span class="meta">
               GitHub ID ${escapeHtml(row.github_id)} ·
-              ${escapeHtml(row.timestamp_utc)}
+              ${escapeHtml(formatUkDateTime(row.timestamp_utc))}
             </span>
           </span>
           <span class="status pending" data-status="${index}">
