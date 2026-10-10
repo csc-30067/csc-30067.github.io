@@ -70,6 +70,7 @@
           <div id="pendingList" class="record-list pending-list">
             <div class="empty">Loading…</div>
           </div>
+          <div id="pendingWaitMessage" class="pending-wait-message" hidden></div>
         </section>
       </div>
 
@@ -116,10 +117,15 @@
     const historyList = document.getElementById("historyList");
     const rejectedList = document.getElementById("rejectedList");
     const pendingList = document.getElementById("pendingList");
+    const pendingWaitMessage =
+      document.getElementById("pendingWaitMessage");
     const dashboardResult = document.getElementById("dashboardResult");
     const selectAll = document.getElementById("selectAllPending");
     const refreshButton = document.getElementById("refreshButton");
     const processButton = document.getElementById("processButton");
+    const WORKFLOW_WAIT_MS = 10000;
+    const FINAL_REFRESH_WAIT_MS = 5000;
+
 
     function formatUkDateTime(value) {
       if (!value) return "";
@@ -463,6 +469,30 @@
       });
     }
 
+    function formatWaitSeconds(milliseconds) {
+      return Math.ceil(milliseconds / 1000);
+    }
+
+    function showPendingWaitMessage(selectedCount) {
+      const estimatedMilliseconds =
+        selectedCount * WORKFLOW_WAIT_MS + FINAL_REFRESH_WAIT_MS;
+
+      const estimatedSeconds =
+        formatWaitSeconds(estimatedMilliseconds);
+
+      pendingWaitMessage.textContent =
+        `Please wait. Processing ${selectedCount} selected ` +
+        `registration${selectedCount === 1 ? "" : "s"} will take ` +
+        `approximately ${estimatedSeconds} seconds.`;
+
+      pendingWaitMessage.hidden = false;
+    }
+
+    function hidePendingWaitMessage() {
+      pendingWaitMessage.hidden = true;
+      pendingWaitMessage.textContent = "";
+    }
+
     processButton.addEventListener("click", async () => {
       const rows = pendingList._rows || [];
       const selectedIndexes = checkboxes()
@@ -470,6 +500,8 @@
         .filter((index) => index >= 0);
 
       if (!selectedIndexes.length) return;
+
+      showPendingWaitMessage(selectedIndexes.length);
 
       const selectedRows = selectedIndexes
         .map((index) => rows[index])
@@ -515,7 +547,7 @@
             status.className = "status submitted";
             status.textContent = "Submitted";
 
-            await wait(10000);
+            await wait(WORKFLOW_WAIT_MS);
           } catch (error) {
             status.className = "status error";
             status.textContent = error.message || "Failed";
@@ -527,7 +559,7 @@
           "Processing submitted. Waiting for GitHub Actions to finish…"
         );
 
-        // await wait(15000);
+        await wait(FINAL_REFRESH_WAIT_MS);
         await loadAllPanels();
 
         refreshButton.disabled = false;
@@ -537,6 +569,8 @@
           checkbox.disabled = false;
         });
         pendingList.classList.remove("is-processing");
+
+        hidePendingWaitMessage();
 
         showStatus(
           dashboardResult,

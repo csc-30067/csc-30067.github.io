@@ -180,6 +180,16 @@ h2 { margin-bottom: 0.35rem; font-size: 1.25rem; }
   pointer-events: none;
 }
 
+.pending-wait-message {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #f2c94c;
+  border-radius: 0.6rem;
+  background: #fff8db;
+  color: #6b5200;
+  font-weight: 600;
+}
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
