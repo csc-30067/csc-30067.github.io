@@ -10,6 +10,7 @@
 
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
+
   <header class="site-header">
     <div class="container">
       <p class="eyebrow">CSC-30067 · 2026/27</p>
@@ -17,6 +18,7 @@
       <p class="lead">Register your GitHub account for the module’s teaching repository.</p>
     </div>
   </header>
+
   <main id="main-content" class="container section">
     <section class="card before-you-begin" aria-labelledby="before-title">
       <h2 id="before-title">Before you begin</h2>
@@ -24,30 +26,122 @@
       <ul>
         <li>Your student ID must be authorised for this module.</li>
         <li>Use your GitHub username, not your email address.</li>
-        <li>Submit the form only once.</li>
+        <li>Your registration is checked before it is submitted for processing.</li>
       </ul>
-      <p class="contact-notice"><strong>Having an issue?</strong> Please contact your instructor.</p>
+      <p class="contact-notice">
+        <strong>Having an issue?</strong> Please contact your instructor.
+      </p>
     </section>
+
     <section class="card form-card" aria-labelledby="registration-title">
       <h2 id="registration-title">Register your account</h2>
       <p class="lead">Enter your university student ID and GitHub username.</p>
+
       <form id="registrationForm">
-        <div class="form-group"><label for="studentId">Student ID</label><input id="studentId" name="student_id"
-            inputmode="numeric" autocomplete="off" pattern="[0-9]{8}" maxlength="8" required>
+        <div class="form-group">
+          <label for="studentId">Student ID</label>
+          <input id="studentId" name="student_id" inputmode="numeric" autocomplete="off" pattern="[0-9]{8}"
+            maxlength="8" required>
           <p class="field-help">Enter your eight-digit student ID.</p>
         </div>
-        <div class="form-group"><label for="githubUsername">GitHub username</label><input id="githubUsername"
-            name="github_username" autocomplete="username" maxlength="39" required>
+
+        <div class="form-group">
+          <label for="githubUsername">GitHub username</label>
+          <input id="githubUsername" name="github_username" autocomplete="username" maxlength="39" required>
           <p class="field-help">Use your GitHub username, not your email address.</p>
         </div>
+
         <button id="submitButton" class="button button-primary" type="submit">Submit registration</button>
       </form>
+
       <div id="registrationStatus" class="status-box" role="status" aria-live="polite" hidden></div>
     </section>
   </main>
+
   <footer class="site-footer">
     <div class="container"><small>CSC-30067 teaching administration</small></div>
   </footer>
+
+  <script>
+    const WORKER_URL = "https://module-registration-relay.marco-ortolani.workers.dev";
+    const form = document.getElementById("registrationForm");
+    const submitButton = document.getElementById("submitButton");
+    const status = document.getElementById("registrationStatus");
+
+    const errorMessages = {
+      "invalid-student-id":
+        "Please enter your eight-digit student ID.",
+
+      "invalid-github-username":
+        "Please enter a valid GitHub username.",
+
+      "not-allowed":
+        "That student ID is not authorised for this module. Please check it or contact the module team.",
+
+      "already-registered":
+        "This student ID has already been registered.",
+
+      "already-pending":
+        "This student ID has already been submitted and is awaiting processing. Please do not submit it again.",
+
+      "github-username-not-found":
+        "We could not find that GitHub username. Please check the spelling and try again.",
+
+      "backend-validation-unavailable":
+        "The registration service is temporarily unavailable. Please try again later.",
+
+      "github-validation-unavailable":
+        "GitHub could not be checked at the moment. Please try again later.",
+
+      "github-dispatch-failed":
+        "Your registration could not be submitted right now. Please try again later."
+    };
+
+    function showStatus(message, kind) {
+      status.hidden = false;
+      status.className = `status-box ${kind}`;
+      status.textContent = message;
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const studentId = document.getElementById("studentId").value.trim();
+      const githubUsername = document.getElementById("githubUsername").value.trim();
+
+      if (!/^[0-9]{8}$/.test(studentId)) {
+        showStatus("Enter an eight-digit student ID.", "status-error");
+        return;
+      }
+      if (!/^[A-Za-z0-9-]{1,39}$/.test(githubUsername)) {
+        showStatus("Enter a valid GitHub username.", "status-error");
+        return;
+      }
+
+      submitButton.disabled = true;
+      showStatus("Submitting registration…", "status-info");
+
+      try {
+        const response = await fetch(WORKER_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ student_id: studentId, github_username: githubUsername })
+        });
+        const data = await response.json();
+        if (!response.ok || data.ok === false) {
+          throw new Error(
+            errorMessages[data.error] ||
+            "The registration request could not be submitted."
+          );
+        }
+        showStatus("Your registration has been submitted successfully.", "status-success");
+        form.reset();
+      } catch (error) {
+        showStatus(error.message || "Registration could not be submitted.", "status-error");
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+  </script>
 </body>
 
 </html>
