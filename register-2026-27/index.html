@@ -1,11 +1,13 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CSC-30067 Registration</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
+
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
 
@@ -35,7 +37,8 @@
       <form id="registrationForm">
         <div class="form-group">
           <label for="studentId">Student ID</label>
-          <input id="studentId" name="student_id" inputmode="numeric" autocomplete="off" pattern="[0-9]{8}" maxlength="8" required>
+          <input id="studentId" name="student_id" inputmode="numeric" autocomplete="off" pattern="[0-9]{8}"
+            maxlength="8" required>
           <p class="field-help">Enter your eight-digit student ID.</p>
         </div>
 
@@ -61,6 +64,35 @@
     const form = document.getElementById("registrationForm");
     const submitButton = document.getElementById("submitButton");
     const status = document.getElementById("registrationStatus");
+
+    const errorMessages = {
+      "invalid-student-id":
+        "Please enter your eight-digit student ID.",
+
+      "invalid-github-username":
+        "Please enter a valid GitHub username.",
+
+      "not-allowed":
+        "That student ID is not authorised for this module. Please check it or contact the module team.",
+
+      "already-registered":
+        "This student ID has already been registered.",
+
+      "already-pending":
+        "This student ID has already been submitted and is awaiting processing. Please do not submit it again.",
+
+      "github-username-not-found":
+        "We could not find that GitHub username. Please check the spelling and try again.",
+
+      "backend-validation-unavailable":
+        "The registration service is temporarily unavailable. Please try again later.",
+
+      "github-validation-unavailable":
+        "GitHub could not be checked at the moment. Please try again later.",
+
+      "github-dispatch-failed":
+        "Your registration could not be submitted right now. Please try again later."
+    };
 
     function showStatus(message, kind) {
       status.hidden = false;
@@ -92,7 +124,12 @@
           body: JSON.stringify({ student_id: studentId, github_username: githubUsername })
         });
         const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "Registration could not be submitted.");
+        if (!response.ok || data.ok === false) {
+          throw new Error(
+            errorMessages[data.error] ||
+            "The registration request could not be submitted."
+          );
+        }
         showStatus("Your registration has been submitted successfully.", "status-success");
         form.reset();
       } catch (error) {
@@ -103,4 +140,5 @@
     });
   </script>
 </body>
+
 </html>
