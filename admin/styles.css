@@ -175,6 +175,11 @@ h2 { margin-bottom: 0.35rem; font-size: 1.25rem; }
   color: var(--error-text);
 }
 
+.pending-list.is-processing {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
 .modal-backdrop {
   position: fixed;
   inset: 0;

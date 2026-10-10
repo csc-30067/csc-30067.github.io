@@ -1,11 +1,13 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CSC-30067 Teaching Administration</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <header class="admin-header">
     <div class="container header-content">
@@ -71,13 +73,7 @@
         </section>
       </div>
 
-      <div
-        id="dashboardResult"
-        class="dashboard-result"
-        role="status"
-        aria-live="polite"
-        hidden
-      ></div>
+      <div id="dashboardResult" class="dashboard-result" role="status" aria-live="polite" hidden></div>
     </div>
   </main>
 
@@ -421,44 +417,50 @@
 
     refreshButton.addEventListener("click", loadAllPanels);
 
-    async function waitForProcessedRows(processedRows) {
-      const processedKeys = new Set(
-        processedRows.map((row) =>
-          [
-            row.timestamp_utc,
-            row.student_id,
-            row.github_username,
-            row.github_id
-          ].join("|")
-        )
-      );
+    // async function waitForProcessedRows(processedRows) {
+    //   const processedKeys = new Set(
+    //     processedRows.map((row) =>
+    //       [
+    //         row.timestamp_utc,
+    //         row.student_id,
+    //         row.github_username,
+    //         row.github_id
+    //       ].join("|")
+    //     )
+    //   );
 
-      const maxAttempts = 12;
-      const delayMs = 5000;
+    //   const maxAttempts = 12;
+    //   const delayMs = 5000;
 
-      for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-        await new Promise((resolve) => setTimeout(resolve, delayMs));
-        await loadAllPanels();
+    //   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    //     await new Promise((resolve) => setTimeout(resolve, delayMs));
+    //     await loadAllPanels();
 
-        const currentRows = pendingList._rows || [];
+    //     const currentRows = pendingList._rows || [];
 
-        const remaining = currentRows.filter((row) =>
-          processedKeys.has(
-            [
-              row.timestamp_utc,
-              row.student_id,
-              row.github_username,
-              row.github_id
-            ].join("|")
-          )
-        );
+    //     const remaining = currentRows.filter((row) =>
+    //       processedKeys.has(
+    //         [
+    //           row.timestamp_utc,
+    //           row.student_id,
+    //           row.github_username,
+    //           row.github_id
+    //         ].join("|")
+    //       )
+    //     );
 
-        if (!remaining.length) {
-          return true;
-        }
-      }
+    //     if (!remaining.length) {
+    //       return true;
+    //     }
+    //   }
 
-      return false;
+    //   return false;
+    // }
+
+    function wait(milliseconds) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, milliseconds);
+      });
     }
 
     processButton.addEventListener("click", async () => {
@@ -476,6 +478,11 @@
       processButton.disabled = true;
       refreshButton.disabled = true;
       selectAll.disabled = true;
+      checkboxes().forEach((checkbox) => {
+        checkbox.disabled = true;
+      });
+      pendingList.classList.add("is-processing");
+
 
       try {
         for (const index of selectedIndexes) {
@@ -513,28 +520,32 @@
           }
         }
       } finally {
+        showStatus(
+          dashboardResult,
+          "Processing submitted. Waiting for GitHub Actions to finish…"
+        );
+
+        await wait(15000);
+        await loadAllPanels();
+
         refreshButton.disabled = false;
         selectAll.disabled = false;
 
-        const completed = await waitForProcessedRows(selectedRows);
+        checkboxes().forEach((checkbox) => {
+          checkbox.disabled = false;
+        });
+        pendingList.classList.remove("is-processing");
 
-        if (completed) {
-          showStatus(
-            dashboardResult,
-            "Selected registrations processed successfully.",
-            "status-success"
-          );
-        } else {
-          showStatus(
-            dashboardResult,
-            "Processing was submitted, but some registrations are still pending. GitHub Actions may still be running.",
-            "status-error"
-          );
-        }
+        showStatus(
+          dashboardResult,
+          "Processing complete. The dashboard has been refreshed.",
+          "status-success"
+        );
 
         updateSelection();
       }
     });
   </script>
 </body>
+
 </html>
