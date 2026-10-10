@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,7 +18,9 @@
       --amber: #b54708;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -32,8 +35,14 @@
       color: white;
     }
 
-    .top small { opacity: .75; }
-    .top h1 { margin: 5px 0 0; font-size: 27px; }
+    .top small {
+      opacity: .75;
+    }
+
+    .top h1 {
+      margin: 5px 0 0;
+      font-size: 27px;
+    }
 
     .wrap {
       max-width: 1000px;
@@ -50,10 +59,21 @@
       box-shadow: 0 2px 8px #14213d0a;
     }
 
-    .panel h2 { margin: 0 0 5px; font-size: 20px; }
-    .panel p { margin: 0 0 18px; color: var(--muted); }
+    .panel h2 {
+      margin: 0 0 5px;
+      font-size: 20px;
+    }
 
-    label { display: block; margin: 14px 0 6px; font-weight: 650; }
+    .panel p {
+      margin: 0 0 18px;
+      color: var(--muted);
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 6px;
+      font-weight: 650;
+    }
 
     input[type="password"] {
       width: 100%;
@@ -75,8 +95,14 @@
       cursor: pointer;
     }
 
-    .btn.secondary { background: #475467; }
-    .btn:disabled { opacity: .55; cursor: not-allowed; }
+    .btn.secondary {
+      background: #475467;
+    }
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
 
     .result {
       display: none;
@@ -87,8 +113,17 @@
       background: #eff6ff;
     }
 
-    .result.error { border-color: #fecaca; background: #fee4e2; color: var(--red); }
-    .result.success { border-color: #abefc6; background: #ecfdf3; color: var(--green); }
+    .result.error {
+      border-color: #fecaca;
+      background: #fee4e2;
+      color: var(--red);
+    }
+
+    .result.success {
+      border-color: #abefc6;
+      background: #ecfdf3;
+      color: var(--green);
+    }
 
     .toolbar {
       display: flex;
@@ -98,7 +133,10 @@
       margin: 16px 0;
     }
 
-    .toolbar label { margin: 0; font-weight: 500; }
+    .toolbar label {
+      margin: 0;
+      font-weight: 500;
+    }
 
     .pending-list {
       overflow: hidden;
@@ -115,22 +153,62 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .pending-row:last-child { border-bottom: 0; }
-    .pending-row input { width: 18px; height: 18px; }
-    .meta { color: var(--muted); font-size: 13px; }
-    .status { font-size: 13px; font-weight: 650; text-align: right; }
-    .status.pending { color: var(--muted); }
-    .status.submitted { color: var(--amber); }
-    .status.error { color: var(--red); }
-    .empty { padding: 20px; color: var(--muted); }
-    .hint { margin-top: 14px; color: var(--muted); font-size: 13px; }
+    .pending-row:last-child {
+      border-bottom: 0;
+    }
+
+    .pending-row input {
+      width: 18px;
+      height: 18px;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .status {
+      font-size: 13px;
+      font-weight: 650;
+      text-align: right;
+    }
+
+    .status.pending {
+      color: var(--muted);
+    }
+
+    .status.submitted {
+      color: var(--amber);
+    }
+
+    .status.error {
+      color: var(--red);
+    }
+
+    .empty {
+      padding: 20px;
+      color: var(--muted);
+    }
+
+    .hint {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+    }
 
     @media (max-width: 650px) {
-      .pending-row { grid-template-columns: 34px 1fr; }
-      .status { grid-column: 2; text-align: left; }
+      .pending-row {
+        grid-template-columns: 34px 1fr;
+      }
+
+      .status {
+        grid-column: 2;
+        text-align: left;
+      }
     }
   </style>
 </head>
+
 <body>
   <header class="top">
     <small>CSC-30067 · 2026/27</small>
@@ -144,12 +222,7 @@
 
       <form id="loginForm">
         <label for="adminPassword">Admin password</label>
-        <input
-          id="adminPassword"
-          type="password"
-          autocomplete="current-password"
-          required
-        >
+        <input id="adminPassword" type="password" autocomplete="current-password" required>
         <button class="btn" id="loginButton">Sign in</button>
       </form>
 
@@ -356,54 +429,74 @@
 
     processButton.addEventListener("click", async () => {
       const rows = pendingList._rows || [];
-      const selected = checkboxes()
-        .map((box, index) => (box.checked ? index : -1))
+
+      const selectedIndexes = checkboxes()
+        .map((checkbox, index) => (checkbox.checked ? index : -1))
         .filter((index) => index >= 0);
 
-      if (!selected.length) return;
-
-      processButton.disabled = true;
-
-      for (const index of selected) {
-        const row = rows[index];
-        const status = document.querySelector(
-          `[data-status="${index}"]`
-        );
-
-        status.className = "status submitted";
-        status.textContent = "Processing…";
-
-        try {
-          const response = await fetch(`${WORKER_URL}/admin/process`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${sessionToken}`
-            },
-            body: JSON.stringify({
-              timestamp_utc: row.timestamp_utc,
-              student_id: row.student_id,
-              github_username: row.github_username,
-              github_id: row.github_id
-            })
-          });
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            throw new Error(data.error || "Processing failed");
-          }
-
-          status.textContent = "Submitted";
-          checkboxes()[index].checked = false;
-        } catch (error) {
-          status.className = "status error";
-          status.textContent = error.message || "Failed";
-        }
+      if (!selectedIndexes.length) {
+        return;
       }
 
-      updateSelection();
+      // Prevent another click while any selected request is running.
+      processButton.disabled = true;
+      refreshButton.disabled = true;
+      selectAll.disabled = true;
+
+      try {
+        for (const index of selectedIndexes) {
+          const row = rows[index];
+
+          const status = document.querySelector(
+            `[data-status="${index}"]`
+          );
+
+          const checkbox = checkboxes()[index];
+
+          status.className = "status submitted";
+          status.textContent = "Processing…";
+
+          try {
+            const response = await fetch(`${WORKER_URL}/admin/process`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${sessionToken}`
+              },
+              body: JSON.stringify({
+                timestamp_utc: row.timestamp_utc,
+                student_id: row.student_id,
+                github_username: row.github_username,
+                github_id: row.github_id
+              })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+              throw new Error(data.error || "Processing failed");
+            }
+
+            status.className = "status submitted";
+            status.textContent = "Submitted";
+            checkbox.checked = false;
+          } catch (error) {
+            status.className = "status error";
+            status.textContent = error.message || "Failed";
+          }
+        }
+      } finally {
+        // Always reload, even if one or more requests failed.
+        await loadPending();
+
+        // Return controls to their normal state.
+        refreshButton.disabled = false;
+        selectAll.disabled = false;
+        updateSelection();
+      }
     });
+
   </script>
 </body>
+
 </html>
